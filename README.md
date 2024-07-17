@@ -20,6 +20,5 @@ Install with python
 
 
 ## Features
-- Auto Claim include Tap Count
 - Auto Clear Task
-- Auto Checkin
+- Auto Spin
