@@ -165,7 +165,7 @@ def main():
               
           """)
     while True:
-        delay_time = random.randint(20000, 21000)
+        delay_time = random.randint(32000, 32000)
         queries = load_credentials()
         for index, query in enumerate(queries):
             start_time = time.time()
@@ -207,16 +207,21 @@ def main():
             print()
             print('get data lottery')
             time.sleep(3)
+            lottery = postlottery(query)
+            if lottery is not None:
+                reward = lottery.get('reward')
+                print(f"Draw 1 Reward : {reward.get('name')}")
+                time.sleep(5)
+            time.sleep(1)
             data_lottery = getlottery(query)
             if data_lottery is not None:
                 draw_count = data_lottery.get('draw_count')
-                print(f"Amount of draw {draw_count}")
                 time.sleep(1)
                 for i in range(draw_count):
                     lottery = postlottery(query)
                     if lottery is not None:
                         reward = lottery.get('reward')
-                        print(f"Draw {i+1} Reward : {reward.get('name')}")
+                        print(f"Draw {i+2} Reward : {reward.get('name')}")
                         time.sleep(5)
         end_time = time.time()
         delay = delay_time - (end_time-start_time)
