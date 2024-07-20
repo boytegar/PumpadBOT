@@ -167,8 +167,9 @@ def main():
     while True:
         delay_time = random.randint(32000, 32000)
         queries = load_credentials()
+        start_time = time.time()
         for index, query in enumerate(queries):
-            start_time = time.time()
+            
             headers['User-Agent'] = getuseragent(index)
             print()
             print(f"========== Account {index+1} ==========")
