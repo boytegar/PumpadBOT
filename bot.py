@@ -1,11 +1,13 @@
 import random
-import requests
 import time
 import urllib.parse
 import json
 import base64
 import socket
 from datetime import datetime
+import cloudscraper
+
+requests = cloudscraper.create_scraper()
 
 headers = {
         'accept': 'application/json, text/plain, */*',
@@ -21,6 +23,10 @@ headers = {
         'sec-fetch-site': 'same-site',
     }
 
+def print_(word):
+    now = datetime.now().isoformat(" ").split(".")[0]
+    print(f"[{now}] | {word}")
+
 def load_credentials():
 
     try:
@@ -28,10 +34,10 @@ def load_credentials():
             queries = [line.strip() for line in f.readlines()]
         return queries
     except FileNotFoundError:
-        print("File query_id.txt tidak ditemukan.")
+        print_("File query_id.txt tidak ditemukan.")
         return [  ]
     except Exception as e:
-        print("Terjadi kesalahan saat memuat token:", str(e))
+        print_("Terjadi kesalahan saat memuat token:", str(e))
         return [  ]
 
 def getuseragent(index):
@@ -55,17 +61,17 @@ def getassets(query):
     try:
         
         if response.status_code >= 500:
-            print(response.text)
+            print_(response.text)
             return None
         elif response.status_code >= 400:
-            print(response.text)
+            print_(response.text)
             return None
         elif response.status_code >= 200:
             return response.json()
         else:
             raise Exception(f'Unexpected status code: {response.status_code}')
     except requests.exceptions.RequestException as e:
-        print(f'Error making request: {e}')
+        print_(f'Error making request: {e}')
         return None
 
 def getmission(query):
@@ -75,17 +81,17 @@ def getmission(query):
     try:
         
         if response.status_code >= 500:
-            print(response.text)
+            print_(response.text)
             return None
         elif response.status_code >= 400:
-            print(response.text)
+            print_(response.text)
             return None
         elif response.status_code >= 200:
             return response.json()
         else:
             raise Exception(f'Unexpected status code: {response.status_code}')
     except requests.exceptions.RequestException as e:
-        print(f'Error making request: {e}')
+        print_(f'Error making request: {e}')
         return None
 
 def clearmission(query, id):
@@ -95,17 +101,17 @@ def clearmission(query, id):
     response = requests.post(url, headers=headers, json=payload)
     try:
         if response.status_code >= 500:
-            print(response.text)
+            print_(response.text)
             return None
         elif response.status_code >= 400:
-            print(response.text)
+            print_(response.text)
             return None
         elif response.status_code >= 200:
             return "done"
         else:
             raise Exception(f'Unexpected status code: {response.status_code}')
     except requests.exceptions.RequestException as e:
-        print(f'Error making request: {e}')
+        print_(f'Error making request: {e}')
         return None
 
 def getlottery(query):
@@ -116,17 +122,17 @@ def getlottery(query):
     try:
         
         if response.status_code >= 500:
-            print(response.text)
+            print_(response.text)
             return None
         elif response.status_code >= 400:
-            print(response.text)
+            print_(response.text)
             return None
         elif response.status_code >= 200:
             return response.json()
         else:
             raise Exception(f'Unexpected status code: {response.status_code}')
     except requests.exceptions.RequestException as e:
-        print(f'Error making request: {e}')
+        print_(f'Error making request: {e}')
         return None
 
 def postlottery(query):
@@ -137,17 +143,17 @@ def postlottery(query):
     try:
         
         if response.status_code >= 500:
-            print(response.text)
+            print_(response.status_code)
             return None
         elif response.status_code >= 400:
-            print(response.text)
+            print_(response.status_code)
             return None
         elif response.status_code >= 200:
             return response.json()
         else:
             raise Exception(f'Unexpected status code: {response.status_code}')
     except requests.exceptions.RequestException as e:
-        print(f'Error making request: {e}')
+        print_(f'Error making request: {e}')
         return None
 
 def printdelay(delay):
@@ -172,24 +178,24 @@ def main():
             
             headers['User-Agent'] = getuseragent(index)
             print()
-            print(f"========== Account {index+1} ==========")
+            print_(f"========== Account {index+1} ==========")
             data_assets = getassets(query)
             if data_assets is not None:
                 assets = data_assets.get('assets')
                 if len(assets) == 0:
-                    print("no have assets")
+                    print_("no have assets")
                 else:
                     for ass in assets:
                         amount = int(ass.get('amount'))
                         token = ass.get('token')
                         decimals = token.get('decimals')
                         pows = pow(10, decimals)
-                        print(f"Token Name : {token.get('name', 'Star')} | Amount : {float(amount/pows)}")
+                        print_(f"Token Name : {token.get('name', 'Star')} | Amount : {float(amount/pows)}")
             else:
-                print("Error get data")
+                print_("Error get data")
             time.sleep(3)
             print()
-            print("get list task")
+            print_("get list task")
             data_mission = getmission(query)
             if data_mission is not None:
                 mission_list = data_mission.get('mission_list')
@@ -202,16 +208,16 @@ def main():
                         if id not in [2,6]:
                             data_done_mission = clearmission(query, id)
                             if data_done_mission == 'done':
-                                print(f"Task : {name} is Done")
+                                print_(f"Task : {name} is Done")
                             time.sleep(3)
 
-            print()
-            print('get data lottery')
+            print_()
+            print_('get data lottery')
             time.sleep(3)
             lottery = postlottery(query)
             if lottery is not None:
                 reward = lottery.get('reward')
-                print(f"Draw 1 Reward : {reward.get('name')}")
+                print_(f"Draw 1 Reward : {reward.get('name')}")
                 time.sleep(5)
             time.sleep(1)
             data_lottery = getlottery(query)
@@ -222,7 +228,7 @@ def main():
                     lottery = postlottery(query)
                     if lottery is not None:
                         reward = lottery.get('reward')
-                        print(f"Draw {i+2} Reward : {reward.get('name')}")
+                        print_(f"Draw {i+2} Reward : {reward.get('name')}")
                         time.sleep(5)
         end_time = time.time()
         delay = delay_time - (end_time-start_time)
