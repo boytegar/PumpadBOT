@@ -198,7 +198,7 @@ def main():
             print_("get list task")
             data_mission = getmission(query)
             if data_mission is not None:
-                mission_list = data_mission.get('mission_list')
+                mission_list = data_mission.get('mission_list',[])
                 for mission in mission_list:
                     done = mission.get('done_time')
                     detail_mission = mission.get('mission')
