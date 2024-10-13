@@ -199,17 +199,18 @@ def main():
             data_mission = getmission(query)
             if data_mission is not None:
                 mission_list = data_mission.get('mission_list',[])
-                for mission in mission_list:
-                    done = mission.get('done_time')
-                    detail_mission = mission.get('mission')
-                    id = detail_mission.get('id')
-                    name = detail_mission.get('name')
-                    if done == 0:
-                        if id not in [2,6]:
-                            data_done_mission = clearmission(query, id)
-                            if data_done_mission == 'done':
-                                print_(f"Task : {name} is Done")
-                            time.sleep(3)
+                if mission_list is not None:
+                    for mission in mission_list:
+                        done = mission.get('done_time')
+                        detail_mission = mission.get('mission')
+                        id = detail_mission.get('id')
+                        name = detail_mission.get('name')
+                        if done == 0:
+                            if id not in [2,6]:
+                                data_done_mission = clearmission(query, id)
+                                if data_done_mission == 'done':
+                                    print_(f"Task : {name} is Done")
+                                time.sleep(3)
                             
             print_('get data lottery')
             time.sleep(3)
