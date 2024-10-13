@@ -210,8 +210,7 @@ def main():
                             if data_done_mission == 'done':
                                 print_(f"Task : {name} is Done")
                             time.sleep(3)
-
-            print_()
+                            
             print_('get data lottery')
             time.sleep(3)
             lottery = postlottery(query)
